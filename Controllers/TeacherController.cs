@@ -14,7 +14,11 @@ namespace CumulativeProject.Controllers
         {
             return View();
         }
-
+        /// <summary>
+        /// creates object of teacherDatacontroller class and access the value of teacher.
+        /// </summary>
+        /// <param name="serchkey">it takes the value from dynamically from form element in list.cshtml page.</param>
+        /// <returns>returns teachers maching with serch and if not provided the serch key it will display whole list of teachers vailable in the database</returns>
         public ActionResult List(string serchkey = null)
         {
 
@@ -24,8 +28,14 @@ namespace CumulativeProject.Controllers
 
             return View(teachers);
         }
-
-        public ActionResult Show(int id)
+        /// <summary>
+        /// it itakes the id value provided from ancor tag in the list.cshtml page and displyaes the data based on that. it takes
+        /// the id and sends it to findteacher function using teacherdata controler which provides the data of teacher and it now returns to the 
+        /// show.cshtml page.
+        /// </summary>
+        /// <param name="id">teaks id of teacher</param>
+        /// <returns>data of the teacher based on id.</returns>
+        public ActionResult Show(int id = -1)
         {
             TeacherDataController controller = new TeacherDataController();
             Teacher NewTeacher = controller.FindTeacher(id);

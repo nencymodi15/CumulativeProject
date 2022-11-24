@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Diagnostics;
 
 namespace CumulativeProject.Controllers
 {
@@ -15,7 +16,14 @@ namespace CumulativeProject.Controllers
         private ProjectDbContext project = new ProjectDbContext();
 
 
-
+        /// <summary>
+        /// this function uses mysql tools and connects to the databse named project, then it stores the qurey and 
+        /// excutes it. this functions main aim is to read data from the database and if the serchkey is given then it will 
+        /// read those value who matches to the serchkey parameter. after getting(reading) data from database will store it in the class object
+        /// and then value will be added to the list of teacher class's.
+        /// </summary>
+        /// <param name="SerchKey">takes the parameter form user from server render page</param>
+        /// <returns>the list of teachers from database.</returns>
         [HttpGet]
         [Route("api/{TeacherData}/{ListTeacher}/{SerchKey?}")]
         public IEnumerable<Teacher> ListTeacher(string SerchKey = null)
@@ -43,11 +51,11 @@ namespace CumulativeProject.Controllers
                 string Employeenumber = (string)reader["employeenumber"];
                 decimal salary = (decimal)reader["salary"];
                 DateTime Hiredate = (DateTime)reader["hiredate"];
-
                 Teacher NewTeacher = new Teacher();
-                NewTeacher.TeacherId = TeacherId;
+                
                 NewTeacher.TeacherFName = TeacherFName;
                 NewTeacher.TeacherLName = TeacherLname;
+                NewTeacher.TeacherId = TeacherId;
                 NewTeacher.hiredate = Hiredate;
                 NewTeacher.Salary = salary;
                 NewTeacher.EmployeeNumber = Employeenumber;
@@ -59,10 +67,14 @@ namespace CumulativeProject.Controllers
 
             return Teacher;
         }
-
+        /// <summary>
+        /// this function displays the data of teachers when it is provided with a id, it will display the data of given id.
+        /// </summary>
+        /// <param name="id">it takes the id dynamically from server rendered page</param>
+        /// <returns>gives stires the data in object of teacher class and returns object of teacher class type.</returns>
         [HttpGet]
 
-        public Teacher FindTeacher(int id)
+        public Teacher FindTeacher(int id = -1)
         {
             Teacher Teacher = new Teacher();
 
@@ -72,7 +84,9 @@ namespace CumulativeProject.Controllers
 
             MySqlCommand cmd = Conn.CreateCommand();
 
-            cmd.CommandText = "select * from teachers where teacherid =" +id;
+            cmd.CommandText = "select * from teachers where teacherid =@key";
+            cmd.Parameters.AddWithValue("@key",id);
+
 
             MySqlDataReader reader = cmd.ExecuteReader();
 
@@ -85,7 +99,6 @@ namespace CumulativeProject.Controllers
                 decimal salary = (decimal)reader["salary"];
                 DateTime Hiredate = (DateTime)reader["hiredate"];
 
-                Teacher NewTeacher = new Teacher();
                 Teacher.TeacherId = TeacherId;
                 Teacher.TeacherFName = TeacherFName;
                 Teacher.TeacherLName = TeacherLname;
@@ -97,6 +110,8 @@ namespace CumulativeProject.Controllers
 
             return Teacher;
 
+
         }
+
     }
 }
